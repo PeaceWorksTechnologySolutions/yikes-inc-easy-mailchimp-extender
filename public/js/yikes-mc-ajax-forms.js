@@ -55,10 +55,11 @@ window.Yikes_Mailchimp_Ajax = window.Yikes_Mailchimp_Ajax || {};
 				});
 			}
 
-                        var custom_validation_result = true;
-                        if ( typeof( yikes_mailchimp_custom_validation ) === 'function' ) {
-                            var custom_validation_result = yikes_mailchimp_custom_validation(submitted_form);
-                        }
+			// PeaceWorks mod: invoke custom validation function (if set)
+			var custom_validation_result = true;
+			if ( typeof( yikes_mailchimp_custom_validation ) === 'function' ) {
+				var custom_validation_result = yikes_mailchimp_custom_validation(submitted_form);
+			}
 
 			/* Loop, display the errors and prevent form submission from occuring */
 			if ( required_fields_left_blank.length > 0 || !custom_validation_result) {
