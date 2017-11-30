@@ -10,6 +10,7 @@ $submission_handler = new Yikes_Inc_Easy_Mailchimp_Extender_Process_Submission_H
 // parse our form data
 parse_str( $_POST['form_data'], $data );
 
+
 // Get the form_id
 $form_id   = absint( $_POST['form_id'] );
 
@@ -41,10 +42,15 @@ $submission_handler->handle_empty_fields_generic( array( $list_id, $submission_s
 // Set the list id in our class
 $submission_handler->set_list_id( $list_id );
 
-// Check for required fields and send an error if a required field is empty
-// This is a server side check for required fields because some browsers (e.g. Safari) do not recognize the `required` HTML 5 attribute
-$submission_handler->check_for_required_form_fields( $data, $form_fields );
-$submission_handler->check_for_required_interest_groups( $data, $form_fields );
+// inhibit validation for required fields if this is an existing user - because 
+// we just want to return the link to update their profile.
+if (!isset($data['mailchimp-existing-status'])) {
+   
+    // Check for required fields and send an error if a required field is empty
+    // This is a server side check for required fields because some browsers (e.g. Safari) do not recognize the `required` HTML 5 attribute
+    $submission_handler->check_for_required_form_fields( $data, $form_fields );
+    $submission_handler->check_for_required_interest_groups( $data, $form_fields );
+}
 
 // Set up some variables from the form data -- these are not required
 $error_messages      = isset( $form_data['error_messages'] ) ? $form_data['error_messages'] : array();
@@ -188,8 +194,10 @@ if ( is_wp_error( $member_exists ) || $double_optin_resubscribe === true ) {
 	// If update_existing_user is true, we need to check our 'send_update_email' option
 	$send_update_email = ( $optin_settings['send_update_email'] === '1' ) ? true : false;
 
+        $authenticated = isset($data['mailchimp-authenticated']) && $data['mailchimp-authenticated'] == $sanitized_email;
+
 	// If $send_update_email is true (we send the email) then we need to fire off the 'send update email' logic
-	if ( $send_update_email === true ) {
+	if ( $send_update_email === true && !$authenticated) {
 		$submission_handler->handle_updating_existing_user();
 	}
 	

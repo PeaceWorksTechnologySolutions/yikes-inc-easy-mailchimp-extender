@@ -143,7 +143,10 @@ class YIKES_Inc_Easy_Mailchimp_Public_Ajax {
 			$email_subject = __( 'Mailchimp Profile Update', 'yikes-inc-easy-mailchimp-extender' );
 		}
 
-		// Check if the email_body was set.
+		$update_link_href = get_site_url() . '/update-subscriber-profile/?email=' . $user_email . '&id=' . $subscriber_id;
+		$update_link_tag  = '<a href="' . $update_link_href . '">';
+		
+		// Check if the email_body was set
 		if ( ! isset( $email_body ) || empty( $email_body ) ) {
 
 			// The email_body should always be set, but we've made this function static just in case so we can grab our default.

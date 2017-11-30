@@ -11,6 +11,7 @@ window.Yikes_Mailchimp_Ajax = window.Yikes_Mailchimp_Ajax || {};
 		/* On Submission, run our ajax shtuff */
 		body.on( 'submit' , '.yikes-easy-mc-form' , function() {
 
+
 			// Store which form was submitted
 			var submitted_form = $( this );
 
@@ -54,8 +55,13 @@ window.Yikes_Mailchimp_Ajax = window.Yikes_Mailchimp_Ajax || {};
 				});
 			}
 
+                        var custom_validation_result = true;
+                        if ( typeof( yikes_mailchimp_custom_validation ) === 'function' ) {
+                            var custom_validation_result = yikes_mailchimp_custom_validation(submitted_form);
+                        }
+
 			/* Loop, display the errors and prevent form submission from occuring */
-			if ( required_fields_left_blank.length > 0 ) {
+			if ( required_fields_left_blank.length > 0 || !custom_validation_result) {
 				/* Remove any visible checkbox group errors */
 				if( submitted_form.find( '.yikes-mailchimp-required-interest-group-error' ).length > 0 ) {
 					submitted_form.find( '.yikes-mailchimp-required-interest-group-error' ).fadeOut( 'fast', function() {
@@ -86,6 +92,7 @@ window.Yikes_Mailchimp_Ajax = window.Yikes_Mailchimp_Ajax || {};
 
 				return false;
 			}
+
 
 			/* disable the button to prevent double click */
 			submitted_form.find( '.yikes-easy-mc-submit-button' ).attr( 'disabled' , 'disabled' );
